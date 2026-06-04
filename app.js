@@ -7,7 +7,6 @@ document.getElementById(id).classList.add('active');
 render();
 }
 
-/* TOGGLE FORM */
 function toggleForm(){
 document.getElementById("form").classList.toggle("hidden");
 }
@@ -27,30 +26,51 @@ showHome:showHome.checked
 };
 
 prompts.push(data);
-
 clearForm();
 render();
 }
 
-/* SEARCH + RENDER */
+/* DELETE PROMPT */
+function deletePrompt(i){
+prompts.splice(i,1);
+render();
+}
+
+/* EDIT SIMPLE */
+function editPrompt(i){
+let p = prompts[i];
+
+title.value = p.title;
+image.value = p.image;
+category.value = p.category;
+prompt.value = p.prompt;
+desc.value = p.desc;
+platform.value = p.platform;
+videoLink.value = p.video;
+showHome.checked = p.showHome;
+
+prompts.splice(i,1);
+toggleForm();
+}
+
+/* RENDER */
 function render(){
 
-let searchVal = document.getElementById("search")?.value || "";
+let searchVal = search.value || "";
 
 /* HOME */
 let home = document.getElementById("homeGrid");
 if(home){
-home.innerHTML = "";
-
-prompts.filter(p=>p.showHome).forEach(p=>{
-home.innerHTML += card(p);
+home.innerHTML="";
+prompts.filter(p=>p.showHome).forEach((p,i)=>{
+home.innerHTML += card(p,i);
 });
 }
 
 /* LIST */
 let list = document.getElementById("list");
 if(list){
-list.innerHTML = "";
+list.innerHTML="";
 
 prompts
 .filter(p=>p.title.includes(searchVal))
@@ -60,7 +80,11 @@ list.innerHTML += `
 <h3>${p.title}</h3>
 <p>${p.category}</p>
 
-<button onclick="deletePrompt(${i})">حذف</button>
+<div class="actions">
+<button class="edit" onclick="editPrompt(${i})">تعديل</button>
+<button class="delete" onclick="deletePrompt(${i})">حذف</button>
+</div>
+
 </div>`;
 });
 }
@@ -68,32 +92,35 @@ list.innerHTML += `
 /* CATEGORIES */
 let catList = document.getElementById("catList");
 if(catList){
-catList.innerHTML = "";
-
+catList.innerHTML="";
 categories.forEach((c,i)=>{
 catList.innerHTML += `
 <div class="card">
 ${c}
-<button onclick="deleteCat(${i})">حذف</button>
+<div class="actions">
+<button class="edit" onclick="editCat(${i})">تعديل</button>
+<button class="delete" onclick="deleteCat(${i})">حذف</button>
+</div>
 </div>`;
 });
 }
+
 }
 
-/* CARD */
-function card(p){
+/* CARD HOME */
+function card(p,i){
 return `
 <div class="card">
-<img src="${p.image}" style="width:100%;border-radius:10px">
-<h4>${p.title}</h4>
+<img src="${p.image}" style="width:100%;border-radius:12px">
+<h3>${p.title}</h3>
 <p>${p.category}</p>
-</div>`;
-}
 
-/* DELETE */
-function deletePrompt(i){
-prompts.splice(i,1);
-render();
+<div class="actions">
+<button class="edit" onclick="editPrompt(${i})">تعديل</button>
+<button class="delete" onclick="deletePrompt(${i})">حذف</button>
+</div>
+
+</div>`;
 }
 
 /* CATEGORIES */
@@ -108,6 +135,14 @@ categories.splice(i,1);
 render();
 }
 
+function editCat(i){
+let newName = prompt("تعديل الاسم:", categories[i]);
+if(newName){
+categories[i]=newName;
+render();
+}
+}
+
 function clearForm(){
 title.value="";
 image.value="";
@@ -115,7 +150,4 @@ prompt.value="";
 desc.value="";
 videoLink.value="";
 showHome.checked=false;
-document.getElementById("form").classList.add("hidden");
 }
-
-render();
