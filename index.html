@@ -1,106 +1,122 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>Prompt Dashboard Pro</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Hub Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Prompt Hub</h2>
+            <button class="toggle-btn" onclick="toggleSidebar()">←</button>
+        </div>
+        
+        <button onclick="showTab('home')" class="nav-btn active">
+            🏠 الرئيسية
+        </button>
+        <button onclick="showTab('prompts')" class="nav-btn">
+            📝 البرومبتات
+        </button>
+        <button onclick="showTab('categories')" class="nav-btn">
+            📂 الأقسام
+        </button>
+        <button onclick="showTab('notifications')" class="nav-btn">
+            🔔 الإشعارات
+        </button>
+        <button onclick="showTab('settings')" class="nav-btn">
+            ⚙️ الإعدادات
+        </button>
 
-<div class="sidebar">
-<h2>Prompt Hub</h2>
+        <div class="sidebar-footer">
+            <button onclick="toggleTheme()" id="theme-btn">🌙</button>
+        </div>
+    </div>
 
-<button onclick="showTab('home')">🏠 الرئيسية</button>
-<button onclick="showTab('prompts')">📝 البرومبتات</button>
-<button onclick="showTab('categories')">📂 الأقسام</button>
-<button onclick="showTab('notifications')">🔔 الإشعارات</button>
-<button onclick="showTab('settings')">⚙️ الإعدادات</button>
+    <!-- Main Content -->
+    <div class="main" id="main">
 
-</div>
+        <!-- HOME -->
+        <div id="home" class="tab active">
+            <h1 class="page-title">الرئيسية</h1>
+            <div class="stats-grid" id="stats"></div>
+            <h2 class="section-title">البرومبتات المميزة</h2>
+            <div class="grid" id="homeGrid"></div>
+        </div>
 
-<div class="main">
+        <!-- PROMPTS -->
+        <div id="prompts" class="tab hidden">
+            <div class="header">
+                <h1 class="page-title">البرومبتات</h1>
+                <button class="btn primary" onclick="toggleForm()">+ إضافة برومبت جديد</button>
+            </div>
+            
+            <input type="text" id="search" placeholder="🔍 ابحث عن برومبت..." oninput="render()">
 
-<!-- HOME -->
-<div id="home" class="tab active">
-<h1>الرئيسية</h1>
-<div id="homeGrid" class="grid"></div>
-</div>
+            <!-- Add Form -->
+            <div id="form" class="form hidden">
+                <h3>إضافة / تعديل برومبت</h3>
+                <input id="title" placeholder="عنوان البرومبت" required>
+                <input id="image" placeholder="رابط الصورة (مباشر)">
+                <select id="category">
+                    <option value="ترند">ترند</option>
+                    <option value="سينمائي">سينمائي</option>
+                    <option value="جيبلي">جيبلي</option>
+                    <option value="واقعي">واقعي</option>
+                    <option value="أنمي">أنمي</option>
+                </select>
+                <textarea id="prompt" rows="4" placeholder="البرومبت"></textarea>
+                <textarea id="desc" rows="2" placeholder="وصف مختصر"></textarea>
+                
+                <select id="platform">
+                    <option value="YouTube">YouTube</option>
+                    <option value="TikTok">TikTok</option>
+                    <option value="Instagram">Instagram</option>
+                    <option value="Telegram">Telegram</option>
+                </select>
+                
+                <input id="videoLink" placeholder="رابط الفيديو (اختياري)">
+                
+                <label class="checkbox-label">
+                    <input type="checkbox" id="showHome"> إظهار في الصفحة الرئيسية
+                </label>
+                
+                <div class="form-buttons">
+                    <button class="btn secondary" onclick="toggleForm()">إلغاء</button>
+                    <button class="btn primary" onclick="addPrompt()">حفظ البرومبت</button>
+                </div>
+            </div>
 
-<!-- PROMPTS -->
-<div id="prompts" class="tab hidden">
+            <div id="list"></div>
+        </div>
 
-<div class="header">
-<h1>البرومبتات</h1>
-<button class="btn" onclick="toggleForm()">+ إضافة برومبت</button>
-</div>
+        <!-- CATEGORIES -->
+        <div id="categories" class="tab hidden">
+            <h1 class="page-title">الأقسام</h1>
+            <div class="form">
+                <input id="catName" placeholder="اسم القسم الجديد">
+                <button class="btn primary" onclick="addCategory()">إضافة قسم</button>
+            </div>
+            <div id="catList"></div>
+        </div>
 
-<input id="search" placeholder="🔍 بحث عن برومبت..." oninput="render()">
+        <!-- Notifications & Settings -->
+        <div id="notifications" class="tab hidden">
+            <h1 class="page-title">الإشعارات</h1>
+            <div class="card">سيتم إضافة نظام إشعارات كامل قريباً</div>
+        </div>
+        <div id="settings" class="tab hidden">
+            <h1 class="page-title">الإعدادات</h1>
+            <div class="card">إعدادات متقدمة قادمة...</div>
+        </div>
+    </div>
 
-<div id="form" class="form hidden">
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
 
-<input id="title" placeholder="عنوان البرومبت">
-<input id="image" placeholder="رابط الصورة">
-
-<select id="category">
-<option>ترند</option>
-<option>سينمائي</option>
-<option>جيبلي</option>
-</select>
-
-<textarea id="prompt" placeholder="البرومبت"></textarea>
-<textarea id="desc" placeholder="الشرح"></textarea>
-
-<select id="platform">
-<option>YouTube</option>
-<option>TikTok</option>
-<option>Telegram</option>
-<option>Facebook</option>
-</select>
-
-<input id="videoLink" placeholder="رابط الفيديو">
-
-<label>
-<input type="checkbox" id="showHome">
-إظهار في الرئيسية
-</label>
-
-<button class="btn full" onclick="addPrompt()">حفظ البرومبت</button>
-
-</div>
-
-<div id="list"></div>
-
-</div>
-
-<!-- CATEGORIES -->
-<div id="categories" class="tab hidden">
-<h1>الأقسام</h1>
-
-<div class="form">
-<input id="catName" placeholder="اسم القسم">
-<button class="btn full" onclick="addCategory()">إضافة قسم</button>
-</div>
-
-<div id="catList"></div>
-</div>
-
-<!-- OTHERS -->
-<div id="notifications" class="tab hidden">
-<h1>الإشعارات</h1>
-<div class="card">واجهة فقط حالياً</div>
-</div>
-
-<div id="settings" class="tab hidden">
-<h1>الإعدادات</h1>
-<div class="card">واجهة فقط حالياً</div>
-</div>
-
-</div>
-
-<script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
