@@ -1,27 +1,19 @@
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Cairo', sans-serif;
-}
-
 body{
-background:#f6f7fb;
+margin:0;
+font-family:'Cairo', sans-serif;
+background:#f4f6f8;
+display:flex;
 color:#111;
 }
 
-/* LAYOUT */
-.layout{
-display:flex;
-min-height:100vh;
-}
-
-/* SIDEBAR */
+/* SIDEBAR DARK */
 .sidebar{
-width:250px;
-background:#0f172a;
+width:240px;
+background:#111;
 color:#fff;
+height:100vh;
 padding:20px;
+position:fixed;
 }
 
 .sidebar h2{
@@ -31,38 +23,74 @@ margin-bottom:20px;
 .sidebar button{
 width:100%;
 padding:12px;
-margin-bottom:8px;
+margin:6px 0;
 border:none;
 border-radius:10px;
-background:#1e293b;
-color:#fff;
 cursor:pointer;
-text-align:right;
+background:#1f1f1f;
+color:#fff;
+transition:0.2s;
 }
 
 .sidebar button:hover{
-background:#334155;
+background:#333;
 }
 
 /* MAIN */
 .main{
-flex:1;
+margin-right:240px;
 padding:25px;
+width:100%;
 }
 
-/* PAGE CONTROL */
-.page{display:none}
-.page.active{display:block}
+.tab{display:none}
+.tab.active{display:block}
 
 /* HEADER */
 .header{
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-bottom:15px;
 }
 
-/* GRID */
+/* INPUTS */
+input,textarea,select{
+width:100%;
+padding:12px;
+margin:6px 0;
+border:1px solid #ddd;
+border-radius:10px;
+outline:none;
+font-size:14px;
+}
+
+/* BUTTON */
+.btn{
+background:#111;
+color:#fff;
+padding:10px 15px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+transition:0.2s;
+}
+
+.btn:hover{
+background:#333;
+}
+
+.full{width:100%}
+
+/* FORM */
+.form{
+background:#fff;
+padding:15px;
+border-radius:15px;
+margin:15px 0;
+box-shadow:0 5px 15px rgba(0,0,0,0.06);
+}
+
+/* GRID HOME */
 .grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
@@ -74,37 +102,37 @@ margin-top:15px;
 .card{
 background:#fff;
 padding:15px;
-border-radius:14px;
-box-shadow:0 10px 20px rgba(0,0,0,0.06);
-}
-
-/* FORM */
-.form{
-background:#fff;
-padding:15px;
-border-radius:14px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,0.06);
 margin:10px 0;
-box-shadow:0 10px 20px rgba(0,0,0,0.06);
+transition:0.2s;
 }
 
-/* INPUTS */
-input,textarea{
-width:100%;
-padding:12px;
-margin:6px 0;
-border:1px solid #e5e7eb;
-border-radius:10px;
-outline:none;
+.card:hover{
+transform:translateY(-3px);
 }
 
-/* BUTTON */
-button{
-padding:10px 14px;
-border:none;
-border-radius:10px;
-background:#111827;
+/* ACTION BUTTONS */
+.actions{
+margin-top:10px;
+display:flex;
+gap:8px;
+}
+
+.edit{
+background:#3498db;
 color:#fff;
+padding:6px 10px;
+border:none;
+border-radius:8px;
 cursor:pointer;
 }
 
-.hidden{display:none}
+.delete{
+background:#e74c3c;
+color:#fff;
+padding:6px 10px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
