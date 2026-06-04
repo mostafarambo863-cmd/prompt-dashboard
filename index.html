@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard</title>
+<title>Prompt Dashboard Pro</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
 
@@ -11,81 +11,93 @@
 
 <body>
 
-<div class="layout">
-
-<!-- SIDEBAR -->
-<aside class="sidebar">
+<div class="sidebar">
 <h2>Prompt Hub</h2>
 
-<nav>
-<button onclick="show('home')">الرئيسية</button>
-<button onclick="show('prompts')">البرومبتات</button>
-<button onclick="show('categories')">الأقسام</button>
-<button onclick="show('notifications')">الإشعارات</button>
-<button onclick="show('settings')">الإعدادات</button>
-</nav>
+<button onclick="showTab('home')">🏠 الرئيسية</button>
+<button onclick="showTab('prompts')">📝 البرومبتات</button>
+<button onclick="showTab('categories')">📂 الأقسام</button>
+<button onclick="showTab('notifications')">🔔 الإشعارات</button>
+<button onclick="showTab('settings')">⚙️ الإعدادات</button>
 
-</aside>
+</div>
 
-<!-- MAIN -->
-<main class="main">
+<div class="main">
 
 <!-- HOME -->
-<section id="home" class="page active">
+<div id="home" class="tab active">
 <h1>الرئيسية</h1>
 <div id="homeGrid" class="grid"></div>
-</section>
+</div>
 
 <!-- PROMPTS -->
-<section id="prompts" class="page">
+<div id="prompts" class="tab hidden">
 
 <div class="header">
 <h1>البرومبتات</h1>
-<button onclick="toggleForm()">+ إضافة</button>
+<button class="btn" onclick="toggleForm()">+ إضافة برومبت</button>
 </div>
 
+<input id="search" placeholder="🔍 بحث عن برومبت..." oninput="render()">
+
 <div id="form" class="form hidden">
-<input id="title" placeholder="العنوان">
-<input id="image" placeholder="الصورة">
+
+<input id="title" placeholder="عنوان البرومبت">
+<input id="image" placeholder="رابط الصورة">
+
+<select id="category">
+<option>ترند</option>
+<option>سينمائي</option>
+<option>جيبلي</option>
+</select>
+
 <textarea id="prompt" placeholder="البرومبت"></textarea>
-<button onclick="add()">حفظ</button>
+<textarea id="desc" placeholder="الشرح"></textarea>
+
+<select id="platform">
+<option>YouTube</option>
+<option>TikTok</option>
+<option>Telegram</option>
+<option>Facebook</option>
+</select>
+
+<input id="videoLink" placeholder="رابط الفيديو">
+
+<label>
+<input type="checkbox" id="showHome">
+إظهار في الرئيسية
+</label>
+
+<button class="btn full" onclick="addPrompt()">حفظ البرومبت</button>
+
 </div>
 
 <div id="list"></div>
 
-</section>
+</div>
 
 <!-- CATEGORIES -->
-<section id="categories" class="page">
+<div id="categories" class="tab hidden">
 <h1>الأقسام</h1>
 
 <div class="form">
-<input id="cat" placeholder="اسم القسم">
-<button onclick="addCat()">إضافة</button>
+<input id="catName" placeholder="اسم القسم">
+<button class="btn full" onclick="addCategory()">إضافة قسم</button>
 </div>
 
 <div id="catList"></div>
-</section>
-
-<!-- NOTIFICATIONS -->
-<section id="notifications" class="page">
-<h1>الإشعارات</h1>
-
-<div class="form">
-<input placeholder="عنوان الإشعار">
-<textarea placeholder="نص الإشعار"></textarea>
-<button>إرسال</button>
 </div>
 
-</section>
+<!-- OTHERS -->
+<div id="notifications" class="tab hidden">
+<h1>الإشعارات</h1>
+<div class="card">واجهة فقط حالياً</div>
+</div>
 
-<!-- SETTINGS -->
-<section id="settings" class="page">
+<div id="settings" class="tab hidden">
 <h1>الإعدادات</h1>
-<div class="card">Settings UI</div>
-</section>
-
-</main>
+<div class="card">واجهة فقط حالياً</div>
+</div>
 
 </div>
 
