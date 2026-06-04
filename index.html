@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Prompt Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="sidebar">
+<h2>Prompt Hub</h2>
+
+<button onclick="showPage('home')">الرئيسية</button>
+<button onclick="showPage('prompts')">البرومبتات</button>
+<button onclick="showPage('categories')">الأقسام</button>
+<button onclick="showPage('notifications')">الإشعارات</button>
+<button onclick="showPage('settings')">الإعدادات</button>
+
+</div>
+
+<div class="main">
+
+<!-- HOME -->
+<div id="home" class="page">
+<h2>الرئيسية</h2>
+<div id="homeList"></div>
+</div>
+
+<!-- PROMPTS -->
+<div id="prompts" class="page hidden">
+
+<h2>البرومبتات</h2>
+
+<input id="title" placeholder="العنوان">
+<input id="image" placeholder="رابط الصورة">
+
+<select id="category">
+<option>ترند</option>
+<option>سينمائي</option>
+<option>جيبلي</option>
+</select>
+
+<textarea id="prompt" placeholder="البرومبت"></textarea>
+<textarea id="desc" placeholder="الشرح"></textarea>
+
+<select id="platform">
+<option>YouTube</option>
+<option>TikTok</option>
+<option>Telegram</option>
+<option>Facebook</option>
+</select>
+
+<input id="videoLink" placeholder="رابط الفيديو">
+
+<label>
+<input type="checkbox" id="showHome">
+إظهار في الرئيسية
+</label>
+
+<button onclick="addPrompt()">حفظ</button>
+
+<hr>
+
+<div id="list"></div>
+
+</div>
+
+<!-- OTHERS -->
+<div id="categories" class="page hidden">الأقسام</div>
+<div id="notifications" class="page hidden">الإشعارات</div>
+<div id="settings" class="page hidden">الإعدادات</div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

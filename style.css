@@ -1,0 +1,47 @@
+body{
+margin:0;
+font-family:Arial;
+display:flex;
+background:#f5f6fa;
+}
+
+.sidebar{
+width:220px;
+background:#111;
+color:#fff;
+padding:20px;
+height:100vh;
+}
+
+.sidebar button{
+width:100%;
+margin:5px 0;
+padding:10px;
+border:none;
+cursor:pointer;
+border-radius:8px;
+}
+
+.main{
+flex:1;
+padding:20px;
+}
+
+.page{
+display:none;
+}
+
+.page.active{
+display:block;
+}
+
+.hidden{
+display:none;
+}
+
+.card{
+background:#fff;
+padding:10px;
+margin:10px 0;
+border-radius:10px;
+}
