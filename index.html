@@ -2,7 +2,10 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Prompt Dashboard</title>
+<title>Prompt Dashboard Pro</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -23,19 +26,19 @@
 
 <!-- HOME -->
 <div id="home" class="tab active">
-<h2>الرئيسية</h2>
+<h1>الرئيسية</h1>
 <div id="homeGrid" class="grid"></div>
 </div>
 
 <!-- PROMPTS -->
 <div id="prompts" class="tab hidden">
 
-<div class="topbar">
-<h2>البرومبتات</h2>
+<div class="header">
+<h1>البرومبتات</h1>
 <button class="btn" onclick="toggleForm()">+ إضافة برومبت</button>
 </div>
 
-<input id="search" placeholder="🔍 بحث..." oninput="render()">
+<input id="search" placeholder="🔍 بحث عن برومبت..." oninput="render()">
 
 <div id="form" class="form hidden">
 
@@ -61,44 +64,39 @@
 <input id="videoLink" placeholder="رابط الفيديو">
 
 <label>
-<input type="checkbox" id="showHome"> إظهار في الرئيسية
+<input type="checkbox" id="showHome">
+إظهار في الرئيسية
 </label>
 
-<button onclick="addPrompt()" class="btn full">حفظ</button>
+<button class="btn full" onclick="addPrompt()">حفظ البرومبت</button>
 
 </div>
 
-<div id="list" class="list"></div>
+<div id="list"></div>
 
 </div>
 
 <!-- CATEGORIES -->
 <div id="categories" class="tab hidden">
-<h2>الأقسام</h2>
+<h1>الأقسام</h1>
 
+<div class="form">
 <input id="catName" placeholder="اسم القسم">
-<button class="btn" onclick="addCategory()">إضافة</button>
+<button class="btn full" onclick="addCategory()">إضافة قسم</button>
+</div>
 
 <div id="catList"></div>
 </div>
 
-<!-- NOTIFICATIONS -->
+<!-- OTHERS -->
 <div id="notifications" class="tab hidden">
-<h2>الإشعارات</h2>
-
-<input placeholder="عنوان الإشعار">
-<textarea placeholder="نص الإشعار"></textarea>
-<button class="btn full">إرسال</button>
+<h1>الإشعارات</h1>
+<div class="card">واجهة فقط حالياً</div>
 </div>
 
-<!-- SETTINGS -->
 <div id="settings" class="tab hidden">
-<h2>الإعدادات</h2>
-
-<input placeholder="اسم التطبيق">
-<input placeholder="رابط الشعار">
-<input placeholder="رابط سياسة الخصوصية">
-<input placeholder="رابط حذف الحساب">
+<h1>الإعدادات</h1>
+<div class="card">واجهة فقط حالياً</div>
 </div>
 
 </div>
