@@ -1,25 +1,56 @@
-let prompts=[];
-let cats=[];
+let prompts = [];
+let cats = [];
 
+let editIndex = null;
+
+/* NAV */
 function show(id){
 document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 render();
 }
 
+/* FORM */
 function toggleForm(){
 document.getElementById("form").classList.toggle("hidden");
 }
 
-/* ADD */
+/* ADD or UPDATE */
 function add(){
-prompts.push({
+
+let data = {
 title:title.value,
 image:image.value,
 prompt:prompt.value
-});
+};
+
+if(editIndex !== null){
+prompts[editIndex] = data;
+editIndex = null;
+}else{
+prompts.push(data);
+}
 
 clear();
+render();
+}
+
+/* EDIT */
+function edit(i){
+let p = prompts[i];
+
+title.value = p.title;
+image.value = p.image;
+prompt.value = p.prompt;
+
+editIndex = i;
+
+document.getElementById("form").classList.remove("hidden");
+}
+
+/* DELETE */
+function del(i){
+prompts.splice(i,1);
 render();
 }
 
@@ -43,11 +74,16 @@ list.innerHTML+=`
 <div class="card">
 <h3>${p.title}</h3>
 <p>${p.prompt}</p>
+
+<div style="margin-top:10px;display:flex;gap:8px;">
+<button onclick="edit(${i})">تعديل</button>
 <button onclick="del(${i})">حذف</button>
+</div>
+
 </div>`;
 });
 
-/* CATS */
+/* CATEGORIES */
 catList.innerHTML="";
 cats.forEach((c,i)=>{
 catList.innerHTML+=`
@@ -58,12 +94,7 @@ ${c}
 });
 }
 
-/* DELETE */
-function del(i){
-prompts.splice(i,1);
-render();
-}
-
+/* CATEGORY */
 function addCat(){
 cats.push(cat.value);
 cat.value="";
@@ -75,6 +106,7 @@ cats.splice(i,1);
 render();
 }
 
+/* CLEAR */
 function clear(){
 title.value="";
 image.value="";
