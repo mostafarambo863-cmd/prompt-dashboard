@@ -1,114 +1,153 @@
 let prompts = [];
-let cats = [];
+let categories = [];
 
-let editIndex = null;
-
-/* NAV */
-function show(id){
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+function showTab(id){
+document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 render();
 }
 
-/* FORM */
 function toggleForm(){
 document.getElementById("form").classList.toggle("hidden");
 }
 
-/* ADD or UPDATE */
-function add(){
+/* ADD PROMPT */
+function addPrompt(){
 
 let data = {
 title:title.value,
 image:image.value,
-prompt:prompt.value
+category:category.value,
+prompt:prompt.value,
+desc:desc.value,
+platform:platform.value,
+video:videoLink.value,
+showHome:showHome.checked
 };
 
-if(editIndex !== null){
-prompts[editIndex] = data;
-editIndex = null;
-}else{
 prompts.push(data);
-}
-
-clear();
+clearForm();
 render();
 }
 
-/* EDIT */
-function edit(i){
+/* DELETE PROMPT */
+function deletePrompt(i){
+prompts.splice(i,1);
+render();
+}
+
+/* EDIT SIMPLE */
+function editPrompt(i){
 let p = prompts[i];
 
 title.value = p.title;
 image.value = p.image;
+category.value = p.category;
 prompt.value = p.prompt;
+desc.value = p.desc;
+platform.value = p.platform;
+videoLink.value = p.video;
+showHome.checked = p.showHome;
 
-editIndex = i;
-
-document.getElementById("form").classList.remove("hidden");
-}
-
-/* DELETE */
-function del(i){
 prompts.splice(i,1);
-render();
+toggleForm();
 }
 
 /* RENDER */
 function render(){
 
+let searchVal = search.value || "";
+
 /* HOME */
-homeGrid.innerHTML="";
-prompts.forEach(p=>{
-homeGrid.innerHTML+=`
-<div class="card">
-<img src="${p.image}" style="width:100%;border-radius:10px">
-<h3>${p.title}</h3>
-</div>`;
+let home = document.getElementById("homeGrid");
+if(home){
+home.innerHTML="";
+prompts.filter(p=>p.showHome).forEach((p,i)=>{
+home.innerHTML += card(p,i);
 });
+}
 
 /* LIST */
+let list = document.getElementById("list");
+if(list){
 list.innerHTML="";
-prompts.forEach((p,i)=>{
-list.innerHTML+=`
+
+prompts
+.filter(p=>p.title.includes(searchVal))
+.forEach((p,i)=>{
+list.innerHTML += `
 <div class="card">
 <h3>${p.title}</h3>
-<p>${p.prompt}</p>
+<p>${p.category}</p>
 
-<div style="margin-top:10px;display:flex;gap:8px;">
-<button onclick="edit(${i})">تعديل</button>
-<button onclick="del(${i})">حذف</button>
+<div class="actions">
+<button class="edit" onclick="editPrompt(${i})">تعديل</button>
+<button class="delete" onclick="deletePrompt(${i})">حذف</button>
 </div>
 
 </div>`;
 });
+}
 
 /* CATEGORIES */
+let catList = document.getElementById("catList");
+if(catList){
 catList.innerHTML="";
-cats.forEach((c,i)=>{
-catList.innerHTML+=`
+categories.forEach((c,i)=>{
+catList.innerHTML += `
 <div class="card">
 ${c}
-<button onclick="delCat(${i})">حذف</button>
+<div class="actions">
+<button class="edit" onclick="editCat(${i})">تعديل</button>
+<button class="delete" onclick="deleteCat(${i})">حذف</button>
+</div>
 </div>`;
 });
 }
 
-/* CATEGORY */
-function addCat(){
-cats.push(cat.value);
-cat.value="";
+}
+
+/* CARD HOME */
+function card(p,i){
+return `
+<div class="card">
+<img src="${p.image}" style="width:100%;border-radius:12px">
+<h3>${p.title}</h3>
+<p>${p.category}</p>
+
+<div class="actions">
+<button class="edit" onclick="editPrompt(${i})">تعديل</button>
+<button class="delete" onclick="deletePrompt(${i})">حذف</button>
+</div>
+
+</div>`;
+}
+
+/* CATEGORIES */
+function addCategory(){
+categories.push(catName.value);
+catName.value="";
 render();
 }
 
-function delCat(i){
-cats.splice(i,1);
+function deleteCat(i){
+categories.splice(i,1);
 render();
 }
 
-/* CLEAR */
-function clear(){
+function editCat(i){
+let newName = prompt("تعديل الاسم:", categories[i]);
+if(newName){
+categories[i]=newName;
+render();
+}
+}
+
+function clearForm(){
 title.value="";
 image.value="";
 prompt.value="";
+desc.value="";
+videoLink.value="";
+showHome.checked=false;
 }
