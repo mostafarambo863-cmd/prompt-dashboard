@@ -1,31 +1,23 @@
-// ====================== Prompt Hub Pro - app.js ======================
-
 let prompts = [];
 let categories = [];
+let notifications = [];
 let currentEditIndex = null;
 let isDarkMode = false;
 
-// Load from localStorage
 function loadData() {
-    if (localStorage.getItem('prompts')) {
-        prompts = JSON.parse(localStorage.getItem('prompts'));
-    }
-    if (localStorage.getItem('categories')) {
-        categories = JSON.parse(localStorage.getItem('categories'));
-    }
-    if (localStorage.getItem('theme')) {
-        isDarkMode = localStorage.getItem('theme') === 'dark';
-        document.body.classList.toggle('dark', isDarkMode);
-    }
+    prompts = JSON.parse(localStorage.getItem('prompts')) || [];
+    categories = JSON.parse(localStorage.getItem('categories')) || [];
+    notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+    isDarkMode = localStorage.getItem('theme') === 'dark';
+    document.body.classList.toggle('dark', isDarkMode);
 }
 
-// Save to localStorage
 function saveData() {
     localStorage.setItem('prompts', JSON.stringify(prompts));
     localStorage.setItem('categories', JSON.stringify(categories));
+    localStorage.setItem('notifications', JSON.stringify(notifications));
 }
 
-// Toast Notification
 function showToast(msg, type = 'success') {
     const toast = document.getElementById('toast');
     toast.textContent = msg;
@@ -34,12 +26,10 @@ function showToast(msg, type = 'success') {
     setTimeout(() => toast.style.display = 'none', 2800);
 }
 
-// Toggle Sidebar (Mobile)
 function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open');
 }
 
-// Toggle Dark Mode
 function toggleTheme() {
     isDarkMode = !isDarkMode;
     document.body.classList.toggle('dark', isDarkMode);
@@ -47,14 +37,12 @@ function toggleTheme() {
     document.getElementById('theme-btn').textContent = isDarkMode ? '☀️' : '🌙';
 }
 
-// Show Tab
 function showTab(tabId) {
     document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
     render();
 }
 
-// Toggle Form (Add / Edit)
 function toggleForm(editIndex = null) {
     const form = document.getElementById('form');
     form.classList.toggle('hidden');
@@ -62,7 +50,6 @@ function toggleForm(editIndex = null) {
     if (editIndex !== null) {
         currentEditIndex = editIndex;
         const p = prompts[editIndex];
-        
         document.getElementById('title').value = p.title || '';
         document.getElementById('image').value = p.image || '';
         document.getElementById('category').value = p.category || 'ترند';
@@ -70,23 +57,35 @@ function toggleForm(editIndex = null) {
         document.getElementById('desc').value = p.desc || '';
         document.getElementById('platform').value = p.platform || 'YouTube';
         document.getElementById('videoLink').value = p.video || '';
-        document.getElementById('showHome').checked = p.showHome || false;
+        document.getElementById('showHome').checked = !!p.showHome;
     } else {
         currentEditIndex = null;
         clearForm();
     }
 }
 
-// Add / Update Prompt
+function handleImageUpload() {
+    const fileInput = document.getElementById('imageUpload');
+    const urlInput = document.getElementById('image');
+    
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                urlInput.value = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
 function addPrompt() {
     const title = document.getElementById('title').value.trim();
-    if (!title) {
-        showToast('يجب كتابة عنوان البرومبت', 'error');
-        return;
-    }
+    if (!title) return showToast('يرجى كتابة العنوان', 'error');
 
     const newPrompt = {
-        title: title,
+        title,
         image: document.getElementById('image').value.trim(),
         category: document.getElementById('category').value,
         prompt: document.getElementById('prompt').value.trim(),
@@ -99,10 +98,10 @@ function addPrompt() {
 
     if (currentEditIndex !== null) {
         prompts[currentEditIndex] = newPrompt;
-        showToast('تم تعديل البرومبت بنجاح');
+        showToast('تم التعديل بنجاح');
     } else {
         prompts.unshift(newPrompt);
-        showToast('تم إضافة البرومبت بنجاح');
+        showToast('تم الإضافة بنجاح');
     }
 
     saveData();
@@ -111,9 +110,8 @@ function addPrompt() {
     render();
 }
 
-// Delete Prompt
 function deletePrompt(index) {
-    if (confirm('هل أنت متأكد من حذف هذا البرومبت؟')) {
+    if (confirm('حذف هذا البرومبت؟')) {
         prompts.splice(index, 1);
         saveData();
         render();
@@ -121,137 +119,145 @@ function deletePrompt(index) {
     }
 }
 
-// Copy Prompt
 function copyPrompt(index) {
-    const text = prompts[index].prompt;
-    navigator.clipboard.writeText(text).then(() => {
-        showToast('تم نسخ البرومبت ✅');
+    navigator.clipboard.writeText(prompts[index].prompt).then(() => {
+        showToast('تم نسخ البرومبت');
     });
 }
 
-// Render All
+function editPromptInHome(index) {
+    showTab('prompts');
+    setTimeout(() => toggleForm(index), 100);
+}
+
 function render() {
-    const searchValue = document.getElementById('search').value.toLowerCase().trim();
+    // Stats
+    document.getElementById('stats').innerHTML = `
+        <div class="stat-card"><h3>${prompts.length}</h3><p>إجمالي البرومبتات</p></div>
+        <div class="stat-card"><h3>${prompts.filter(p => p.showHome).length}</h3><p>في الرئيسية</p></div>
+        <div class="stat-card"><h3>${categories.length}</h3><p>الأقسام</p></div>
+    `;
 
-    // Stats in Home
-    renderStats();
-
-    // Home Grid (Featured)
+    // Home Grid
     const homeGrid = document.getElementById('homeGrid');
     homeGrid.innerHTML = '';
     prompts.filter(p => p.showHome).forEach((p, i) => {
-        homeGrid.innerHTML += createHomeCard(p, i);
+        const originalIndex = prompts.indexOf(p);
+        homeGrid.innerHTML += `
+            <div class="card">
+                ${p.image ? `<img src="${p.image}" alt="${p.title}">` : ''}
+                <div class="card-content">
+                    <h3>${p.title}</h3>
+                    <p>${p.category}</p>
+                    <div class="actions" style="margin-top:12px">
+                        <button class="btn secondary" onclick="copyPrompt(${originalIndex})">📋 نسخ</button>
+                        <button class="btn primary" onclick="editPromptInHome(${originalIndex})">تعديل</button>
+                    </div>
+                </div>
+            </div>
+        `;
     });
 
     // Prompts List
     const list = document.getElementById('list');
-    list.innerHTML = '';
-
-    prompts
-        .filter(p => p.title.toLowerCase().includes(searchValue))
-        .forEach((p, i) => {
-            list.innerHTML += `
-                <div class="card">
-                    ${p.image ? `<img src="${p.image}" alt="${p.title}">` : ''}
-                    <div class="card-content">
-                        <h3>${p.title}</h3>
-                        <p class="category">${p.category} • ${p.platform}</p>
-                        ${p.desc ? `<p class="desc">${p.desc}</p>` : ''}
-                        <div class="actions">
-                            <button class="btn secondary" onclick="copyPrompt(${i})">📋 نسخ</button>
-                            <button class="btn primary" onclick="toggleForm(${i})">تعديل</button>
-                            <button class="btn" style="background:#ef4444; color:white;" onclick="deletePrompt(${i})">حذف</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-
-    renderCategories();
-}
-
-// Render Statistics
-function renderStats() {
-    const html = `
-        <div class="stat-card">
-            <h3>${prompts.length}</h3>
-            <p>إجمالي البرومبتات</p>
-        </div>
-        <div class="stat-card">
-            <h3>${prompts.filter(p => p.showHome).length}</h3>
-            <p>في الرئيسية</p>
-        </div>
-        <div class="stat-card">
-            <h3>${categories.length}</h3>
-            <p>الأقسام</p>
-        </div>
-    `;
-    document.getElementById('stats').innerHTML = html;
-}
-
-// Home Card
-function createHomeCard(p, i) {
-    return `
+    list.innerHTML = prompts.map((p, i) => `
         <div class="card">
             ${p.image ? `<img src="${p.image}" alt="${p.title}">` : ''}
             <div class="card-content">
                 <h3>${p.title}</h3>
-                <p>${p.category}</p>
-                <div class="actions">
+                <p>${p.category} • ${p.platform}</p>
+                ${p.desc ? `<p>${p.desc}</p>` : ''}
+                <div class="actions" style="margin-top:12px">
                     <button class="btn secondary" onclick="copyPrompt(${i})">📋 نسخ</button>
                     <button class="btn primary" onclick="toggleForm(${i})">تعديل</button>
+                    <button class="btn" style="background:#ef4444;color:white" onclick="deletePrompt(${i})">حذف</button>
                 </div>
             </div>
         </div>
-    `;
+    `).join('');
+
+    renderCategories();
+    renderNotifications();
 }
 
-// Categories
 function addCategory() {
     const name = document.getElementById('catName').value.trim();
-    if (name && !categories.includes(name)) {
+    if (name) {
         categories.push(name);
         saveData();
         render();
-        showToast('تم إضافة القسم');
         document.getElementById('catName').value = '';
+        showToast('تم إضافة القسم');
     }
 }
 
 function renderCategories() {
     const container = document.getElementById('catList');
-    container.innerHTML = '';
-    categories.forEach((cat, i) => {
-        container.innerHTML += `
-            <div class="card">
-                <h3>${cat}</h3>
-                <button onclick="deleteCategory(${i})" style="background:#ef4444;color:white;padding:8px 15px;border:none;border-radius:8px;cursor:pointer;">حذف</button>
+    container.innerHTML = categories.map((cat, i) => `
+        <div class="card">
+            <h3>${cat}</h3>
+            <div style="margin-top:10px">
+                <button onclick="editCategory(${i})" class="btn primary">تعديل</button>
+                <button onclick="deleteCategory(${i})" class="btn" style="background:#ef4444;color:white">حذف</button>
             </div>
-        `;
-    });
+        </div>
+    `).join('');
+}
+
+function editCategory(i) {
+    const newName = prompt("تعديل اسم القسم:", categories[i]);
+    if (newName && newName.trim()) {
+        categories[i] = newName.trim();
+        saveData();
+        render();
+    }
 }
 
 function deleteCategory(i) {
-    if (confirm('حذف هذا القسم؟')) {
+    if (confirm('حذف القسم؟')) {
         categories.splice(i, 1);
         saveData();
         render();
     }
 }
 
-// Clear Form
+// Notifications
+function addNotification() {
+    const title = document.getElementById('notifTitle').value.trim();
+    const desc = document.getElementById('notifDesc').value.trim();
+    if (title) {
+        notifications.unshift({ title, desc, date: new Date().toISOString() });
+        saveData();
+        renderNotifications();
+        document.getElementById('notifTitle').value = '';
+        document.getElementById('notifDesc').value = '';
+        showToast('تم إضافة الإشعار');
+    }
+}
+
+function renderNotifications() {
+    const container = document.getElementById('notifList');
+    container.innerHTML = notifications.map(n => `
+        <div class="card">
+            <h3>${n.title}</h3>
+            <p>${n.desc || ''}</p>
+        </div>
+    `).join('');
+}
+
 function clearForm() {
     document.getElementById('title').value = '';
     document.getElementById('image').value = '';
+    document.getElementById('imageUpload').value = '';
     document.getElementById('prompt').value = '';
     document.getElementById('desc').value = '';
     document.getElementById('videoLink').value = '';
     document.getElementById('showHome').checked = false;
 }
 
-// Initialize
 window.onload = () => {
     loadData();
+    handleImageUpload();
     render();
     document.getElementById('theme-btn').textContent = isDarkMode ? '☀️' : '🌙';
 };
