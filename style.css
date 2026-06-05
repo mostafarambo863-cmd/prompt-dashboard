@@ -1,4 +1,8 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
     font-family: 'Cairo', sans-serif;
@@ -43,11 +47,12 @@ body.dark {
     transition: 0.3s;
 }
 
-.nav-btn.active, .nav-btn:hover {
+.nav-btn.active,
+.nav-btn:hover {
     background: #3b82f6;
 }
 
-/* Main Content */
+/* Main */
 .main {
     margin-right: 260px;
     padding: 30px;
@@ -58,10 +63,11 @@ body.dark {
 .tab { display: none; }
 .tab.active { display: block; }
 
-/* Header & Titles */
+/* Titles */
 .page-title {
     margin-bottom: 20px;
     font-size: 2rem;
+    color: inherit;
 }
 
 .section-title {
@@ -90,13 +96,13 @@ body.dark .card {
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.15);
 }
 
 .card img {
     width: 100%;
-    height: 180px;
+    height: 190px;
     object-fit: cover;
 }
 
@@ -107,7 +113,7 @@ body.dark .card {
 /* Form */
 .form {
     background: white;
-    padding: 20px;
+    padding: 25px;
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     margin: 20px 0;
@@ -126,10 +132,30 @@ input, select, textarea {
     font-size: 1rem;
 }
 
-body.dark input, body.dark select, body.dark textarea {
+body.dark input,
+body.dark select,
+body.dark textarea {
     background: #334155;
     border-color: #475569;
     color: white;
+}
+
+textarea {
+    resize: vertical;
+    font-family: inherit;
+}
+
+#imageUpload {
+    padding: 10px;
+    background: #f8f9fc;
+    border: 2px dashed #94a3b8;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+body.dark #imageUpload {
+    background: #334155;
+    border-color: #64748b;
 }
 
 /* Buttons */
@@ -139,6 +165,7 @@ body.dark input, body.dark select, body.dark textarea {
     border-radius: 10px;
     cursor: pointer;
     font-weight: 600;
+    transition: 0.3s;
 }
 
 .btn.primary {
@@ -153,7 +180,7 @@ body.dark input, body.dark select, body.dark textarea {
 
 .form-buttons {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     margin-top: 15px;
 }
 
@@ -162,7 +189,7 @@ body.dark input, body.dark select, body.dark textarea {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .stat-card {
@@ -192,9 +219,36 @@ body.dark .stat-card {
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
+/* Settings */
+.setting-link {
+    display: block;
+    padding: 14px;
+    background: #f1f5f9;
+    color: #1e40af;
+    text-decoration: none;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+body.dark .setting-link {
+    background: #334155;
+    color: #60a5fa;
+}
+
+.setting-link:hover {
+    background: #dbeafe;
+}
+
 /* Responsive */
 @media (max-width: 992px) {
-    .sidebar { transform: translateX(-100%); transition: 0.4s; }
-    .sidebar.open { transform: translateX(0); }
-    .main { margin-right: 0; }
+    .sidebar {
+        transform: translateX(-100%);
+        transition: 0.4s;
+    }
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    .main {
+        margin-right: 0;
+    }
 }
